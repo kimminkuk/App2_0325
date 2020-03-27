@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="App2_0325.MainPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height=".5*"/>
+            <RowDefinition Height=".5*"/>
+            <RowDefinition Height=".5*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Source="Icon" BackgroundColor="PowderBlue"
+               Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"/>
+
+        <Editor x:Name="DATA" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
+                Placeholder="Enter Note Here"/>
+
+        <Editor x:Name="EDI1" Grid.Row="2" Grid.ColumnSpan="3" Placeholder="Test Text"/>
+
+        <Button Grid.Row="3" Grid.Column="0" Text="Search" Clicked="Button_Clicked_Search"/>
+        <Button Grid.Row="3" Grid.Column="1" Text="Erase" Clicked="Button_Clicked_erase"/>
+        <Button Grid.Row="3" Grid.Column="2" Text="TEST" Clicked="Button_Clicked_Test"/>
+
+        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="Cool!"
+               FontSize="Large"/>
+    </Grid>
+
+</ContentPage>
