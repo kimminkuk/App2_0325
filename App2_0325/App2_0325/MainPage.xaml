@@ -27,12 +27,10 @@
                 Placeholder="Enter Note Here"/>
 
         <Editor x:Name="EDI1" Grid.Row="2" Grid.ColumnSpan="3" Placeholder="Test Text"/>
-
         <Button Grid.Row="3" Grid.Column="0" Text="Search" Clicked="Button_Clicked_Search"/>
         <Button Grid.Row="3" Grid.Column="1" Text="Erase" Clicked="Button_Clicked_erase"/>
         <Button Grid.Row="3" Grid.Column="2" Text="TEST" Clicked="Button_Clicked_Test"/>
-
-        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="Cool!"
+        <Label x:Name="Lable1" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="Cool!"
                FontSize="Large"/>
     </Grid>
 
