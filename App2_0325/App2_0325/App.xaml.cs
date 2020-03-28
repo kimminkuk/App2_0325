@@ -11,10 +11,12 @@ namespace App2_0325
             InitializeComponent();
 
             MainPage = new MainPage();
+  
         }
 
         protected override void OnStart()
         {
+
         }
 
         protected override void OnSleep()
