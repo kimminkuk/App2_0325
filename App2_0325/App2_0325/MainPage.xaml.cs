@@ -16,7 +16,9 @@ namespace App2_0325
     {
         MethodClass Mt = new MethodClass();
         Global_days GG = new Global_days();
-        stock_[] stock = new stock_[60];
+        const int _days = 60;
+        stock_[] stock = new stock_[_days];
+        stock_v2[] stk_v2 = new stock_v2[_days];
         bool AI_Learn_flg = false;
 
         public MainPage()
@@ -54,18 +56,30 @@ namespace App2_0325
             //https://m.stock.naver.com/item/main.nhn#/stocks/084680/price
 
             //NEW
-            //Page1 10days
-            EDI1.Text = HTML_ADDR.html_HtmlDoc_page6(jusik_code, ref stock);
+            // //Page1 10days
+            // EDI1.Text = HTML_ADDR.html_HtmlDoc_page6(jusik_code, ref stock);
+            // //Page2 20days
+            // EDI1.Text += HTML_ADDR.html_HtmlDoc_page5(jusik_code, ref stock);
+            // //Page3 30days
+            // EDI1.Text += HTML_ADDR.html_HtmlDoc_page4(jusik_code, ref stock);
+            // //Page4 40days
+            // EDI1.Text += HTML_ADDR.html_HtmlDoc_page3(jusik_code, ref stock);
+            // //Page5 50days
+            // EDI1.Text += HTML_ADDR.html_HtmlDoc_page2(jusik_code, ref stock);
+            // //Page6 60days
+            // EDI1.Text += HTML_ADDR.html_HtmlDoc_page1(jusik_code, ref stock);
+
+            EDI1.Text = HTML_ADDR.html_HtmlDoc_page6_v2(jusik_code, ref stk_v2);
             //Page2 20days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page5(jusik_code, ref stock);
+            EDI1.Text += HTML_ADDR.html_HtmlDoc_page5_v2(jusik_code, ref stk_v2);
             //Page3 30days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page4(jusik_code, ref stock);
+            EDI1.Text += HTML_ADDR.html_HtmlDoc_page4_v2(jusik_code, ref stk_v2);
             //Page4 40days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page3(jusik_code, ref stock);
+            EDI1.Text += HTML_ADDR.html_HtmlDoc_page3_v2(jusik_code, ref stk_v2);
             //Page5 50days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page2(jusik_code, ref stock);
+            EDI1.Text += HTML_ADDR.html_HtmlDoc_page2_v2(jusik_code, ref stk_v2);
             //Page6 60days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page1(jusik_code, ref stock);
+            EDI1.Text += HTML_ADDR.html_HtmlDoc_page1_v2(jusik_code, ref stk_v2);
 
             AI_Learn_flg = true;
         }
@@ -77,7 +91,8 @@ namespace App2_0325
             AI_Learn_flg = false;
             CLEAR stk_clr = new CLEAR();
 
-            stk_clr.CLEAR_STOCK(ref stock);
+            stk_clr.CLEAR_STOCK(ref stock,ref stk_v2);
+            
         }
 
         private void Button_Clicked_Test(object sender, EventArgs e)
@@ -96,8 +111,12 @@ namespace App2_0325
 
             //5days
             //Learn_Result = BP.BP_START(s_dmp_int, s_dhp_int, s_dlp_int, s_dtv_int, s_dcp_int);
-            Learn_Result = BP.BP_START_STOCK(ref stock);
 
+            //Version1
+            //Learn_Result = BP.BP_START_STOCK(ref stock);
+
+            //Version2
+            Learn_Result = BP.BP_START_STOCK_VERSION2(ref stk_v2);
             Lable1.Text = "종가 예측: " + (int)Learn_Result;
         }
     }
