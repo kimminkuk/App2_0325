@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:oxy="clr-namespace:OxyPlot.Xamarin.Forms;assembly=OxyPlot.Xamarin.Forms"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="App2_0325.MainPage">
@@ -21,15 +23,36 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Image Source="Icon" BackgroundColor="PowderBlue"
+<!--        <Image Source="Icon" BackgroundColor="PowderBlue"
                Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4"/>
+-->
+<!--        <microcharts:ChartView x:Name="chartView" BindingContextChanged="chartView_BindingContextChanged"
+                               Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"/>
+-->
+        <oxy:PlotView Model="{Binding Model}"
+                      VerticalOptions="Center"
+                      HorizontalOptions="Center"/>
+
+        
+        <oxy:PlotView x:Name="PlotChart"
+                      Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"
+                      VerticalOptions="Center"
+                      HorizontalOptions="Center" />
+        
+
+        <skia:SKCanvasView x:Name="canvasView"
+                           Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"
+                           Grid.RowSpan="1"
+                           PaintSurface="canvasView_PaintSurface"/>
 
         <Editor x:Name="DATA" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1"
-                Placeholder="종목 입력"/>
+                Placeholder="종목 입력" />
+
 
         <Editor x:Name="EDI1" Grid.Row="2" Grid.ColumnSpan="4" Placeholder=""/>
-        <Button Grid.Row="3" Grid.Column="0" Text="Search" Clicked="Button_Clicked_Search"/>
-        <Button Grid.Row="3" Grid.Column="1" Text="Erase" Clicked="Button_Clicked_erase"/>
+        
+        <Button Grid.Row="3" Grid.Column="0" Text="Search" Clicked="Button_Clicked_Search" />
+        <Button Grid.Row="3" Grid.Column="1" Text="Erase" Clicked="Button_Clicked_erase"  />
         <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Text="TEST" Clicked="Button_Clicked_Test"/>
         <Label x:Name="Lable1" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Text=""
                FontSize="Large"/>
