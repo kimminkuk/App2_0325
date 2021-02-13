@@ -4,8 +4,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using HtmlAgilityPack;
 using Xamarin.Forms;
+
+//namespace
+using App2_0325.ViewModels;
+using App2_0325.Models;
 
 //drawing add
 using SkiaSharp;
@@ -22,14 +27,16 @@ namespace App2_0325
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        MethodClass Mt = new MethodClass();
-        Global_days GG = new Global_days();
+//        MethodClass Mt = new MethodClass();
         const int _days = 60;
-        stock_[] stock = new stock_[_days];
-        stock_v2[] stk_v2 = new stock_v2[_days];
+        const int _days_ex = 120;
+        stock_[] stock = new stock_[_days_ex];
         bool AI_Learn_flg = false;
         bool chart_erase = false;
-        
+
+        //Global
+        string jusik_code = "";
+
         //Add 0415 Skiasharp
         SKPaint blackFillPaint = new SKPaint
         {
@@ -41,103 +48,77 @@ namespace App2_0325
         public MainPage()
         {
             InitializeComponent();
+            BindingContext = new html_addr();
             
         }
 
+        //https://ssl.pstatic.net/imgfinance/chart/item/candle/day/005380.png
         private void Button_Clicked_Search(object sender, EventArgs e)
         {
-            sangjang sj = new sangjang();
-            ALL_Constants constants = new ALL_Constants();
-
-            // enter 제거?
-            if (String.IsNullOrEmpty(DATA.Text)) { EDI1.Text = "ERR"; return; }
-            
-            string search_data = DATA.Text.ToString();
-            
-            string jusik_code = "";
+            /*21-02-13*/
+            html_addr HA = (html_addr)BindingContext;
+            StockCodeSearch codeSearch = new StockCodeSearch();
+            /*21-02-12*/
+            // enter 제거 (string.trim() -> 문자열 앞,뒤 공백 제거)
+            if (String.IsNullOrEmpty(DATA.Text.Trim())) { EDI1.Text = "ERR"; return; }
+            string search_data = DATA.Text.ToString().Trim();
             EDI1.Text = "";
 
-            // 20/12/13            
-#if false
-            for (int i = 0; i < 3721; i++)
+            /*21-02-13*/
+            jusik_code = codeSearch.code_search(search_data);
+
+            if(jusik_code.Equals("STOCK_CODE_ERROR")) //Err Finish
             {
-                if (sj.jongmok[i].Equals(search_data))
-                {
-                    EDI1.Text = sj.jongmok[i].ToString() + "\t";
-                    jusik_code = sj.company[i].ToString("D6");
-                    break;
-                }
-                if (i == 3720) { EDI1.Text = "ERR"; return; }
+                EDI1.Text = "ERR";
+                return; //finish
             }
-#endif
-            for (int i = 0; i < constants.SJ_Number; i++)
-            {
-                if (sj.jongmok[i].Equals(search_data))
-                {
-                    EDI1.Text = sj.jongmok[i].ToString() + "\t";
-                    jusik_code = sj.company[i].ToString("D6");
-                    break;
-                }
-                if (i == (constants.SJ_Number - 1)) { EDI1.Text = "ERR"; return; }
-            }
+            //Stock Image
+            //Default Day
+            HA.html_png_parsing(jusik_code, Kind_Constants.kinds_day);
 
-            html_addr HTML_ADDR = new html_addr();
-            //EDI1.Text += " 60Day data analysis";
-            //https://m.stock.naver.com/item/main.nhn#/stocks/084680/price
+            
+            EDI1.Text = HA.html_data_parsing(jusik_code,  ref stock, Kind_Constants.days_60, Kind_Constants.version_2);
+            EDI1.Text += HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_50, Kind_Constants.version_2);
+            EDI1.Text += HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_40, Kind_Constants.version_2);
+            EDI1.Text += HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_30, Kind_Constants.version_2);
+            EDI1.Text += HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_20, Kind_Constants.version_2);
+            EDI1.Text += HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_10, Kind_Constants.version_2);
 
-            //NEW
-            //Page1 10days
-            EDI1.Text = HTML_ADDR.html_HtmlDoc_page6(jusik_code, ref stock);
-            //Page2 20days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page5(jusik_code, ref stock);
-            //Page3 30days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page4(jusik_code, ref stock);
-            //Page4 40days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page3(jusik_code, ref stock);
-            //Page5 50days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page2(jusik_code, ref stock);
-            //Page6 60days
-            EDI1.Text += HTML_ADDR.html_HtmlDoc_page1(jusik_code, ref stock);
 
-//              HTML_ADDR.html_HtmlDoc_page6_v2(jusik_code, ref stk_v2);
-////            //Page2 20days
-//              HTML_ADDR.html_HtmlDoc_page5_v2(jusik_code, ref stk_v2);
-////            //Page3 30days
-//                HTML_ADDR.html_HtmlDoc_page4_v2(jusik_code, ref stk_v2);
-////            //Page4 40days
-//                HTML_ADDR.html_HtmlDoc_page3_v2(jusik_code, ref stk_v2);
-////            //Page5 50days
-//                HTML_ADDR.html_HtmlDoc_page2_v2(jusik_code, ref stk_v2);
-////            //Page6 60days
-//                HTML_ADDR.html_HtmlDoc_page1_v2(jusik_code, ref stk_v2);
+            HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_70, Kind_Constants.version_2);
+            HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_80, Kind_Constants.version_2);
+            HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_90, Kind_Constants.version_2);
+            HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_100, Kind_Constants.version_2);
+            HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_110, Kind_Constants.version_2);
+            HA.html_data_parsing(jusik_code, ref stock, Kind_Constants.days_120, Kind_Constants.version_2);
 
 
             //SKPaint(Chart)
-            canvasView.InvalidateSurface();
-
+            //            canvasView.InvalidateSurface();
             AI_Learn_flg = true;
             chart_erase = true;
         }
 
         private void Button_Clicked_erase(object sender, EventArgs e)
         {
-            //EDI1.Text = "CLEAR";
-            Lable1.Text = "CLEAR";
+            html_addr HA = (html_addr)BindingContext;
+            EDI1.Text = "CLEAR";
+            HA.html_png_erase(); // Image Binding Clear
             AI_Learn_flg = false;
             chart_erase = false;
             CLEAR stk_clr = new CLEAR();
 
-            stk_clr.CLEAR_STOCK(ref stock,ref stk_v2);
+            stk_clr.CLEAR_STOCK(ref stock, Kind_Constants.test_120days);
 
             //SKPaint(Chart)
-            canvasView.InvalidateSurface();
+//            canvasView.InvalidateSurface();
         }
 
+        //60days Learn
         private void Button_Clicked_Test(object sender, EventArgs e)
         {
             double Learn_Result = 0;
-           
-            if (AI_Learn_flg == false) { Lable1.Text += "DATA READ FAIL"; return; }
+            if (AI_Learn_flg == false) { EDI1.Text += "DATA READ FAIL"; return; }
 
             BP_Learn BP = new BP_Learn();
 
@@ -147,15 +128,29 @@ namespace App2_0325
             //4. transaction price
             //5. closing price (output)
 
-            //5days
-            //Learn_Result = BP.BP_START(s_dmp_int, s_dhp_int, s_dlp_int, s_dtv_int, s_dcp_int);
+            //Version2
+            Learn_Result = BP.BP_START_STOCK_VERSION2(ref stock, Kind_Constants.test_60days);
+            EDI1.Text = "종가 예측: " + (int)Learn_Result;
+        }
 
-            //Version1
-            //Learn_Result = BP.BP_START_STOCK(ref stock);
+        //120days
+        private void Button_Clicked_Test_120(object sender, EventArgs e)
+        {
+            double Learn_Result = 0;
+
+            if (AI_Learn_flg == false) { EDI1.Text += "DATA READ FAIL"; return; }
+
+            BP_Learn BP = new BP_Learn();
+
+            //1. martget price
+            //2. high price
+            //3. low price
+            //4. transaction price
+            //5. closing price (output)
 
             //Version2
-            Learn_Result = BP.BP_START_STOCK_VERSION2(ref stk_v2);
-            Lable1.Text = "종가 예측: " + (int)Learn_Result;
+            Learn_Result = BP.BP_START_STOCK_VERSION2(ref stock, Kind_Constants.test_120days);
+            EDI1.Text = "종가 예측: " + (int)Learn_Result;
         }
 
         private void canvasView_PaintSurface(object sender, SkiaSharp.Views.Forms.SKPaintSurfaceEventArgs e)
@@ -170,9 +165,9 @@ namespace App2_0325
 
             SKBitmap sKBitmap = new SKBitmap(width, height);
 
-            SKPoint[] points = new SKPoint[GG._days];
+            SKPoint[] points = new SKPoint[Global_days._days];
 
-            int new_width = width / GG._days;
+            int new_width = width / Global_days._days;
             //int new_height = height
 
             //for (int i = GG._days - 1; i > 0; i--)
@@ -183,20 +178,20 @@ namespace App2_0325
             // 20/12/14 code add
             // add for High Price to Height 
             int temp_height = 0;
-            for (int i = 0; i < GG._days; i++ )
+            for (int i = 0; i < Global_days._days; i++ )
             {
-                if (temp_height < stk_v2[i].s_dhp_int )
+                if (temp_height < stock[i].s_dhp_int )
                 {
-                    temp_height = stk_v2[i].s_dhp_int;
+                    temp_height = stock[i].s_dhp_int;
                 }
             }
             //add for Low Price to Height
-            int temp_height_low = stk_v2[0].s_dlp_int;
-            for (int i = 0; i < GG._days; i++)
+            int temp_height_low = stock[0].s_dlp_int;
+            for (int i = 0; i < Global_days._days; i++)
             {
-                if (temp_height_low > stk_v2[i].s_dlp_int)
+                if (temp_height_low > stock[i].s_dlp_int)
                 {
-                    temp_height_low = stk_v2[i].s_dlp_int;
+                    temp_height_low = stock[i].s_dlp_int;
                 }
             } 
 #if false
@@ -205,21 +200,21 @@ namespace App2_0325
                 float new_height = (stk_v2[i].s_dcp_int / (float)stk_v2[i].s_dhp_int) * height;
                 points[i] = new SKPoint(i * new_width, new_height);
             }
-#endif            
-            for (int i = 0; i < GG._days; i++)
+#endif
+            for (int i = 0; i < Global_days._days; i++)
             {
-                float new_height = (float)stk_v2[i].s_dcp_int;
+                float new_height = (float)stock[i].s_dcp_int;
                 points[i] = new SKPoint(i, new_height);
             }
 
-            for (int i = 1; i < GG._days; i++)
+            for (int i = 1; i < Global_days._days; i++)
             {
                 //canvas
                 
                 canvas.DrawLine(points[i - 1], points[i], blackFillPaint);
             }
 
-            Point[] point_oxy = new Point[GG._days];
+            Point[] point_oxy = new Point[Global_days._days];
             
 
              //OxyPlot
@@ -256,9 +251,9 @@ namespace App2_0325
             };
 
 
-            for (int i = 0; i < GG._days; i++)
+            for (int i = 0; i < Global_days._days; i++)
             {
-                series2.Points.Add(new DataPoint(stk_v2[i].s_date, stk_v2[i].s_dcp_int/100));
+                series2.Points.Add(new DataPoint(stock[i].s_date, stock[i].s_dcp_int/100));
             }
             series2.Smooth = true;
             model.Series.Add(series2);
@@ -266,17 +261,43 @@ namespace App2_0325
 
         }
 
-        private void CreateLine()
+//        private void CreateLine()
+//        {
+//            var myModel = new PlotModel { Title = "Example 2" };
+//            myModel.Series.Add
+//                (
+//                new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)")
+//                );
+//
+//            this.PlotChart.Model = myModel;
+//            
+//        }
+        private void Button_Clicked_Save(object sender, EventArgs e)
         {
-            var myModel = new PlotModel { Title = "Example 2" };
-            myModel.Series.Add
-                (
-                new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)")
-                );
 
-            this.PlotChart.Model = myModel;
-            
+        }
+        private void Button_Clicked_Next(object sender, EventArgs e)
+        {
+
         }
 
+        private void Button_Clicked_Day(object sender, EventArgs e)
+        {
+            /*21-02-13*/
+            html_addr HA = (html_addr)BindingContext;
+            HA.html_png_parsing(jusik_code, Kind_Constants.kinds_day);
+        }
+        private void Button_Clicked_Week(object sender, EventArgs e)
+        {
+            /*21-02-13*/
+            html_addr HA = (html_addr)BindingContext;
+            HA.html_png_parsing(jusik_code, Kind_Constants.kinds_week);
+        }
+        private void Button_Clicked_Month(object sender, EventArgs e)
+        {
+            /*21-02-13*/
+            html_addr HA = (html_addr)BindingContext;
+            HA.html_png_parsing(jusik_code, Kind_Constants.kinds_month);
+        }
     }
 }

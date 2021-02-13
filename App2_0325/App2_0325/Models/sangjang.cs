@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App2_0325
+namespace App2_0325.Models
 {
 /*
     class sangjang
@@ -7462,10 +7462,10 @@ namespace App2_0325
     } //class
 */
 
-    class sangjang
+    public class sangjang
     {
         //company , jongmok
-        public int[] company = new int[2403] {
+        public readonly int[] company = new int[2403] {
             060310,
 095570,
 006840,
@@ -9870,7 +9870,7 @@ namespace App2_0325
 037440,
 238490
         };
-        public string[] jongmok = new string[2403] {
+        public readonly string[] jongmok = new string[2403] {
 "3S",
 "AJ네트웍스",
 "AK홀딩스",

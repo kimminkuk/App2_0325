@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App2_0325
+namespace App2_0325.ViewModels
 {
     class MethodClass
     {

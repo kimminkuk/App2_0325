@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using App2_0325.Models;
 
-namespace App2_0325
+namespace App2_0325.ViewModels
 {
     class BP_Learn
     {
@@ -18,13 +19,17 @@ namespace App2_0325
         const int Get_5days = 5; // HTML COUNT -->  5 days?
         const int Get_20days = 20;
         const int Get_60days = 60;
+        const int Get_120days = 120;
 
         const int Get_days = Get_60days;
 
         //For Version2
         const int Input_Neuron_v2 = 3;
-        double[] Input_v2 = new double[Get_days * Input_Neuron_v2];
+        //        double[] Input_v2 = new double[Get_days * Input_Neuron_v2];
+        double[] Input_v2;
         double[] T_Input_v2 = new double[Input_Neuron_v2];
+
+        //double[] inss = new double[Get_120days * Input_Neuron_v2];
 
         //int 
         int Bias = 1;
@@ -36,15 +41,17 @@ namespace App2_0325
         int small_jump = 0;
         int Iteration = 0;
         
-        int Epoch = 1000000; // loop
+        int Epoch = 50000; // loop 1000000
 
         int New_Lable = Number_Neurons - Output_Neuron;
         int Lable = Number_Neurons - Output_Neuron - Hd_L_Number;
         
         double RMSE = 0;
         double L_N_G = 0.4;
-        
-        double[] Input      = new double[Get_days * Input_Neuron];
+
+        //double[] Input      = new double[Get_days * Input_Neuron];
+        double[] Input;
+
         double[] Sigmoid    = new double[100];
         double[] Delta      = new double[100];
         double[] Sum        = new double[100];
@@ -85,12 +92,21 @@ namespace App2_0325
 
         /*BPA Learn*/
 //1.시가 2.고가 3.저가 4.거래량 5.종가(타겟)
-        public double BP_START_STOCK(ref stock_[] bp_stock)
+        public double BP_START_STOCK(ref stock_[] bp_stock, int kind)
         {
             //Initial
-            Global_days GG = new Global_days();
-            stock_[] stock_bp = new stock_[GG._days];
+            stock_[] stock_bp = new stock_[Global_days._days];
             stock_bp = bp_stock; //ref
+
+            switch(kind)
+            {
+                case Kind_Constants.test_60days:
+                    Input = new double[Get_60days * Input_Neuron];
+                    break;
+                case Kind_Constants.test_120days:
+                    Input = new double[Get_120days * Input_Neuron];
+                    break;
+            }
 
             //Bias, Hidden Neuron Weight Set
             for (int i = 0; i < Number_Neurons; i++)
@@ -418,12 +434,22 @@ namespace App2_0325
  * BP STOCK VERSION2
  * TRANSACTION VOLUME DELETE
  */
-        public double BP_START_STOCK_VERSION2(ref stock_v2[] bp_stock_v2)
+        public double BP_START_STOCK_VERSION2(ref stock_[] bp_stock_v2, int kind)
         {
             //Initial
-            Global_days GG = new Global_days();
-            stock_v2[] stock_bp = new stock_v2[GG._days];
+            stock_[] stock_bp = new stock_[Global_days._days];
             stock_bp = bp_stock_v2; //ref
+
+            switch (kind)
+            {
+                case Kind_Constants.test_60days:
+                    Input_v2 = new double[Get_60days * Input_Neuron_v2];
+                    break;
+
+                case Kind_Constants.test_120days:
+                    Input_v2 = new double[Get_120days * Input_Neuron_v2];
+                    break;
+            }
 
             //Bias, Hidden Neuron Weight Set
             for (int i = 0; i < Number_Neurons; i++)
@@ -594,7 +620,8 @@ namespace App2_0325
                     {                             //i--> 0 1 2 3 4 5 6 7  => l --> 0 1 0 1 0 1 0 1
                         if (carry == 0) ++k;  //K--> 0 0 1 1 2 2 3 3
                     }
-                    Weight_Input_Layer[i] = (L_N_G * Delta[k] * Input[carry + bnc * Input_Neuron_v2]) + Weight_Input_Layer[i];
+                    //Weight_Input_Layer[i] = (L_N_G * Delta[k] * Input[carry + bnc * Input_Neuron_v2]) + Weight_Input_Layer[i];
+                    Weight_Input_Layer[i] = (L_N_G * Delta[k] * Input_v2[carry + bnc * Input_Neuron_v2]) + Weight_Input_Layer[i];
                 }
                 carry = 0;
                 k = 0;
@@ -698,7 +725,8 @@ namespace App2_0325
             {
                 for (int j = 0; j < Input_Neuron_v2; ++j)
                 {
-                    T_Sum[i] += (T_Input[j + bnc * 2] * Weight_Input_Layer[inc]);
+                    //T_Sum[i] += (T_Input[j + bnc * 2] * Weight_Input_Layer[inc]); T_Input_v2
+                    T_Sum[i] += (T_Input_v2[j + bnc * 2] * Weight_Input_Layer[inc]);
                     ++inc;
                 }
                 T_Sum[i] += (Bias * Bias_Weight[i]);
