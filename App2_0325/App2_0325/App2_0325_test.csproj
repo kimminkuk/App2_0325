@@ -21,4 +21,10 @@
   <ItemGroup>
     <Folder Include="Converters\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="NextPage1.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

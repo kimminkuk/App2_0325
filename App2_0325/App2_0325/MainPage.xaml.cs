@@ -276,9 +276,11 @@ namespace App2_0325
         {
 
         }
-        private void Button_Clicked_Next(object sender, EventArgs e)
-        {
 
+        //Tap Page
+        async private void Button_Clicked_Next(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new NextPage1(jusik_code));
         }
 
         private void Button_Clicked_Day(object sender, EventArgs e)

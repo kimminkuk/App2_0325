@@ -10,7 +10,8 @@ namespace App2_0325
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            //MainPage = new MainPage();
+            MainPage = new NavigationPage(new MainPage());
   
         }
 
